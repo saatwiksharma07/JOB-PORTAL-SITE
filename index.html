@@ -1,762 +1,237 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Setu — India's Gateway to Global Careers</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="CareerConnect — Find your dream job and connect with leading companies." />
+<title>CareerConnect | Find Your Dream Job Today</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg: #ffffff;
-    --bg-soft: #f4f6f8;
-    --card: #ffffff;
-    --border: #e4e8ec;
-    --border-soft: #edf0f3;
-    --navy: #0b2a4a;
-    --navy-soft: #234b73;
-    --saffron: #c9812f;
-    --saffron-soft: #e3a35a;
-    --green: #2f7d5b;
-    --text: #12233a;
-    --text-dim: #55697d;
-    --text-faint: #8497a8;
-    --radius: 14px;
-    --shadow: 0 18px 40px -28px rgba(11,42,74,0.22);
-  }
-
-  *{ box-sizing:border-box; margin:0; padding:0; }
-  html{ scroll-behavior:smooth; }
-
-  body{
-    background:
-      radial-gradient(1000px 560px at 88% -8%, rgba(201,129,47,0.06), transparent 60%),
-      radial-gradient(900px 500px at -8% 25%, rgba(47,125,91,0.05), transparent 55%),
-      var(--bg);
-    color:var(--text);
-    font-family:'Inter', sans-serif;
-    line-height:1.5;
-    -webkit-font-smoothing:antialiased;
-    overflow-x:hidden;
-  }
-
-  a{ color:inherit; text-decoration:none; }
-  ul{ list-style:none; }
-  img{ max-width:100%; display:block; }
-
-  .wrap{ max-width:1160px; margin:0 auto; padding:0 32px; }
-
-  .eyebrow{
-    font-family:'IBM Plex Mono', monospace;
-    font-size:12px; letter-spacing:0.14em; text-transform:uppercase;
-    color:var(--saffron);
-  }
-
-  h1,h2,h3{ font-family:'Fraunces', serif; font-weight:600; letter-spacing:-0.01em; color:var(--navy); }
-
-  /* ============ LOADING SCREEN (pure CSS, 5s) ============ */
-  @keyframes fillBar{ from{ width:0%; } to{ width:100%; } }
-  @keyframes hideLoader{
-    0%   { opacity:1; visibility:visible; pointer-events:all; }
-    92%  { opacity:1; visibility:visible; pointer-events:all; }
-    100% { opacity:0; visibility:hidden; pointer-events:none; }
-  }
-  @keyframes revealSite{
-    0%   { opacity:0; }
-    92%  { opacity:0; }
-    100% { opacity:1; }
-  }
-  @keyframes stampPulse{
-    0%,100%{ transform:rotate(-8deg) scale(1); }
-    50%{ transform:rotate(-8deg) scale(1.05); }
-  }
-
-  .loader{
-    position:fixed; inset:0; z-index:999;
-    background:
-      radial-gradient(700px 400px at 50% 20%, rgba(201,129,47,0.08), transparent 60%),
-      radial-gradient(700px 400px at 50% 90%, rgba(47,125,91,0.06), transparent 60%),
-      #ffffff;
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:28px;
-    animation: hideLoader 5s ease forwards;
-  }
-  .loader-mark{
-    display:flex; align-items:center; gap:12px;
-    font-family:'Fraunces', serif; font-size:30px; font-weight:600; color:var(--navy);
-  }
-  .loader-mark .ring{
-    width:46px; height:46px; border-radius:50%;
-    border:2px solid var(--saffron);
-    display:flex; align-items:center; justify-content:center;
-    font-family:'IBM Plex Mono', monospace; font-size:16px; color:var(--saffron);
-  }
-  .loader-tag{
-    font-family:'IBM Plex Mono', monospace; font-size:11.5px; letter-spacing:.14em;
-    text-transform:uppercase; color:var(--text-faint);
-  }
-  .loader-track{
-    width:280px; height:3px; border-radius:10px; background:var(--border); overflow:hidden;
-  }
-  .loader-fill{
-    height:100%; width:0%; border-radius:10px;
-    background:linear-gradient(90deg, #6fb3e0, var(--navy-soft));
-    animation: fillBar 5s cubic-bezier(.22,.61,.36,1) forwards;
-  }
-  .site{ animation: revealSite 5s linear forwards; }
-
-  /* ============ NAV ============ */
-  header.nav{
-    position:sticky; top:0; z-index:50;
-    background:rgba(255,255,255,0.86);
-    backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--border-soft);
-  }
-  .flag-rule{ height:3px; display:flex; }
-  .flag-rule span{ flex:1; }
-  .flag-rule .f1{ background:var(--saffron-soft); }
-  .flag-rule .f2{ background:#f2f0e6; }
-  .flag-rule .f3{ background:var(--green); }
-
-  .nav-inner{
-    max-width:1160px; margin:0 auto; padding:18px 32px;
-    display:flex; align-items:center; justify-content:space-between;
-  }
-  .logo{
-    display:flex; align-items:center; gap:10px;
-    font-family:'Fraunces', serif; font-size:21px; font-weight:600; color:var(--navy);
-  }
-  .logo .mark{
-    width:32px; height:32px; border-radius:8px;
-    background:linear-gradient(150deg, var(--saffron-soft), var(--saffron) 60%, #7a4f18);
-    display:flex; align-items:center; justify-content:center;
-    color:#fff8ee; font-family:'IBM Plex Mono', monospace; font-weight:600; font-size:14px;
-  }
-  .nav-links{ display:flex; gap:34px; align-items:center; }
-  .nav-links a{ font-size:14.5px; color:var(--text-dim); transition:color .18s ease; }
-  .nav-links a:hover{ color:var(--navy); }
-  .nav-actions{ display:flex; align-items:center; gap:16px; }
-  .btn{
-    display:inline-flex; align-items:center; justify-content:center; gap:8px;
-    padding:10px 20px; border-radius:8px; font-size:14px; font-weight:600;
-    border:1px solid transparent; cursor:pointer; transition:all .18s ease;
-  }
-  .btn-ghost{ color:var(--navy); border-color:var(--border); background:transparent; }
-  .btn-ghost:hover{ border-color:var(--saffron); color:var(--saffron); }
-  .btn-solid{
-    background:linear-gradient(150deg, var(--navy-soft), var(--navy));
-    color:#f2f8fd; box-shadow:0 8px 20px -10px rgba(11,42,74,0.55);
-  }
-  .btn-solid:hover{ filter:brightness(1.1); transform:translateY(-1px); }
-
-  /* ============ HERO ============ */
-  .hero{ padding:90px 0 76px; }
-  .hero-grid{ display:grid; grid-template-columns:1.1fr 0.9fr; gap:60px; align-items:center; }
-  .hero h1{ font-size:52px; line-height:1.08; margin:18px 0 20px; }
-  .hero h1 em{ font-style:italic; color:var(--saffron); }
-  .hero p.lead{ font-size:16.5px; color:var(--text-dim); max-width:470px; margin-bottom:34px; }
-
-  .search-panel{
-    background:var(--card); border:1px solid var(--border); border-radius:16px;
-    padding:10px; display:flex; gap:8px;
-    box-shadow:0 24px 50px -28px rgba(11,42,74,0.35);
-  }
-  .search-field{
-    flex:1; display:flex; flex-direction:column; gap:2px;
-    padding:10px 16px; border-right:1px solid var(--border-soft);
-  }
-  .search-field:last-of-type{ border-right:none; }
-  .search-field label{
-    font-family:'IBM Plex Mono', monospace; font-size:10.5px; letter-spacing:0.08em;
-    text-transform:uppercase; color:var(--text-faint);
-  }
-  .search-field input{
-    background:transparent; border:none; outline:none; color:var(--text);
-    font-family:'Inter', sans-serif; font-size:14.5px; padding-top:2px; width:100%;
-  }
-  .search-field input::placeholder{ color:var(--text-faint); }
-  .search-panel .btn-solid{ padding:0 24px; border-radius:11px; }
-
-  .hero-tags{ display:flex; gap:10px; margin-top:18px; flex-wrap:wrap; }
-  .pill{
-    font-size:12.5px; color:var(--text-dim); border:1px solid var(--border);
-    background:var(--bg-soft); padding:6px 13px; border-radius:100px;
-  }
-
-  /* passport-style visual */
-  .hero-visual{ position:relative; height:400px; }
-  .passport{
-    position:absolute; width:320px; background:var(--card);
-    border:1px solid var(--border); border-radius:16px; padding:26px;
-    box-shadow:0 26px 60px -22px rgba(11,42,74,0.32);
-  }
-  .passport.back{ top:34px; left:52px; opacity:.55; transform:rotate(-6deg); }
-  .passport.front{ top:0; left:0; transform:rotate(3deg); }
-  .passport .p-top{ display:flex; justify-content:space-between; align-items:flex-start; }
-  .passport .p-code{ font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--saffron); letter-spacing:0.06em; }
-  .passport .p-avatar{
-    width:44px; height:44px; border-radius:10px; margin:18px 0 14px;
-    background:linear-gradient(150deg, var(--green), #1f5b41);
-  }
-  .passport h3{ font-size:19px; margin-bottom:4px; }
-  .passport .p-role{ font-size:13px; color:var(--text-dim); margin-bottom:16px; }
-  .passport .p-divider{ border-top:1px dashed var(--border); margin:14px 0; position:relative; }
-  .passport .p-divider::before, .passport .p-divider::after{
-    content:''; position:absolute; top:-9px; width:18px; height:18px; border-radius:50%;
-    background:var(--bg-soft); border:1px solid var(--border);
-  }
-  .passport .p-divider::before{ left:-26px; }
-  .passport .p-divider::after{ right:-26px; }
-  .passport .p-foot{ display:flex; justify-content:space-between; font-size:12px; color:var(--text-faint); }
-  .passport .p-foot span{ color:var(--saffron); font-family:'IBM Plex Mono', monospace; }
-  .stamp{
-    position:absolute; right:-14px; bottom:38px; width:74px; height:74px; border-radius:50%;
-    border:2px solid rgba(47,125,91,0.55); display:flex; align-items:center; justify-content:center;
-    flex-direction:column; color:var(--green); font-family:'IBM Plex Mono', monospace;
-    transform:rotate(-8deg); background:rgba(47,125,91,0.05);
-    animation:stampPulse 3.5s ease-in-out infinite;
-  }
-  .stamp span:first-child{ font-size:9px; letter-spacing:.06em; }
-  .stamp span:last-child{ font-size:15px; font-weight:600; }
-
-  /* ============ STATS ============ */
-  .stats{ border-top:1px solid var(--border-soft); border-bottom:1px solid var(--border-soft); padding:34px 0; }
-  .stats-row{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:24px; }
-  .stat b{ font-family:'Fraunces', serif; font-size:28px; font-weight:600; color:var(--navy); display:block; }
-  .stat span{ font-size:13px; color:var(--text-faint); }
-
-  /* ============ SECTION HEAD ============ */
-  .section{ padding:84px 0; }
-  .section-head{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:42px; gap:24px; }
-  .section-head h2{ font-size:32px; margin-top:8px; }
-  .section-head p{ color:var(--text-dim); font-size:14.5px; max-width:360px; }
-  .view-all{
-    font-size:13.5px; color:var(--saffron); border-bottom:1px solid rgba(201,129,47,0.4);
-    padding-bottom:2px; white-space:nowrap;
-  }
-
-  /* ============ FEATURED JOBS ============ */
-  .jobs-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
-  .job-card{
-    display:flex; background:var(--card); border:1px solid var(--border);
-    border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow);
-    transition:border-color .18s ease, transform .18s ease, box-shadow .18s ease;
-  }
-  .job-card:hover{ border-color:rgba(201,129,47,0.5); transform:translateY(-2px); box-shadow:0 20px 40px -26px rgba(11,42,74,0.3); }
-  .job-main{ flex:1; padding:24px; }
-  .job-top{ display:flex; align-items:center; gap:12px; margin-bottom:16px; }
-  .job-logo{
-    width:38px; height:38px; border-radius:9px; flex-shrink:0;
-    display:flex; align-items:center; justify-content:center;
-    font-family:'Fraunces', serif; font-weight:600; font-size:15px; color:#fff8ee;
-  }
-  .job-co{ font-size:13px; color:var(--text-faint); }
-  .job-card h3{ font-size:18px; margin-bottom:10px; font-weight:600; }
-  .job-meta{ display:flex; gap:14px; font-size:12.5px; color:var(--text-dim); margin-bottom:16px; flex-wrap:wrap; }
-  .job-tags{ display:flex; gap:8px; flex-wrap:wrap; }
-  .tag{
-    font-size:11.5px; padding:5px 11px; border-radius:100px;
-    background:rgba(47,125,91,0.08); color:var(--green); border:1px solid rgba(47,125,91,0.22);
-  }
-  .job-stub{
-    width:118px; flex-shrink:0; border-left:1px dashed var(--border);
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:10px; padding:20px 10px; position:relative; background:var(--bg-soft);
-  }
-  .job-stub::before, .job-stub::after{
-    content:''; position:absolute; left:-11px; width:20px; height:20px; border-radius:50%;
-    background:var(--card); border:1px solid var(--border);
-  }
-  .job-stub::before{ top:-10px; }
-  .job-stub::after{ bottom:-10px; }
-  .job-stub .code{ font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--saffron); letter-spacing:.04em; }
-  .job-stub .flagchip{
-    font-family:'IBM Plex Mono', monospace; font-size:12px; font-weight:600; color:var(--navy);
-    border:1px solid var(--border); border-radius:6px; padding:3px 8px;
-  }
-  .job-stub .pay{ font-size:13px; font-weight:600; color:var(--navy); text-align:center; }
-
-  /* ============ TRUSTED STRIP ============ */
-  .trusted{ padding:52px 0; }
-  .trusted p{
-    text-align:center; font-family:'IBM Plex Mono', monospace; font-size:11.5px;
-    letter-spacing:.12em; text-transform:uppercase; color:var(--text-faint); margin-bottom:28px;
-  }
-  .logo-row{
-    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:24px;
-    font-family:'Fraunces', serif; font-size:19px; color:var(--text-faint); font-weight:500;
-  }
-
-  /* ============ PROFILES (global talent) ============ */
-  .profile-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:18px; }
-  .profile-card{
-    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
-    padding:22px; text-align:center; box-shadow:var(--shadow);
-    transition:border-color .18s ease, transform .18s ease, box-shadow .18s ease;
-  }
-  .profile-card:hover{ border-color:rgba(201,129,47,0.4); transform:translateY(-2px); }
-  .avatar-ring{
-    width:64px; height:64px; border-radius:50%; margin:0 auto 14px;
-    display:flex; align-items:center; justify-content:center;
-    font-family:'Fraunces', serif; font-size:22px; font-weight:600; color:#fff8ee;
-  }
-  .profile-card h3{ font-size:15px; margin-bottom:3px; }
-  .profile-card .p-title{ font-size:12.5px; color:var(--text-dim); margin-bottom:10px; }
-  .profile-card .p-loc{
-    font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--saffron);
-    border-top:1px dashed var(--border); padding-top:10px;
-  }
-
-  /* ============ CATEGORIES ============ */
-  .cat-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:18px; }
-  .cat-card{
-    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
-    padding:26px; box-shadow:var(--shadow);
-    transition:border-color .18s ease, background .18s ease, box-shadow .18s ease;
-  }
-  .cat-card:hover{ border-color:rgba(201,129,47,0.4); background:var(--bg-soft); }
-  .cat-icon{
-    width:42px; height:42px; border-radius:10px; margin-bottom:20px;
-    background:rgba(201,129,47,0.1); border:1px solid rgba(201,129,47,0.28);
-    display:flex; align-items:center; justify-content:center;
-  }
-  .cat-card h3{ font-size:17px; margin-bottom:6px; }
-  .cat-card p{ font-size:13px; color:var(--text-faint); }
-
-  /* ============ CTA BANNER ============ */
-  .cta-banner{
-    max-width:1096px; margin:0 auto;
-    background:linear-gradient(120deg, var(--navy), #123457 60%);
-    border:1px solid var(--border); border-radius:20px;
-    padding:56px 60px; display:flex; align-items:center; justify-content:space-between; gap:40px;
-    position:relative; overflow:hidden;
-  }
-  .cta-banner::after{
-    content:''; position:absolute; right:-80px; top:-80px; width:280px; height:280px;
-    background:radial-gradient(circle, rgba(201,129,47,0.22), transparent 70%);
-  }
-  .cta-banner h2{ font-size:27px; color:#f2f8fd; margin-bottom:10px; max-width:420px; }
-  .cta-banner p{ color:#a9c4dc; font-size:14.5px; max-width:400px; }
-  .cta-side{ flex-shrink:0; }
-  .btn-gold{
-    background:linear-gradient(150deg, var(--saffron-soft), var(--saffron));
-    color:#28190a; box-shadow:0 8px 20px -10px rgba(201,129,47,0.55);
-  }
-  .btn-gold:hover{ filter:brightness(1.08); transform:translateY(-1px); }
-
-  /* ============ FOOTER ============ */
-  footer{ border-top:1px solid var(--border-soft); padding:60px 0 30px; margin-top:36px; }
-  .footer-grid{ display:grid; grid-template-columns:1.4fr repeat(4, 1fr); gap:32px; margin-bottom:50px; }
-  .footer-brand p{ font-size:13.5px; color:var(--text-faint); margin-top:14px; max-width:220px; }
-  .footer-col h4{
-    font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase;
-    color:var(--text-faint); margin-bottom:16px;
-  }
-  .footer-col a{ display:block; font-size:13.5px; color:var(--text-dim); margin-bottom:12px; transition:color .15s ease; }
-  .footer-col a:hover{ color:var(--saffron); }
-  .footer-bottom{
-    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;
-    border-top:1px solid var(--border-soft); padding-top:24px;
-    font-size:12.5px; color:var(--text-faint);
-  }
-
-  /* ============ RESPONSIVE ============ */
-  @media (max-width: 980px){
-    .profile-grid{ grid-template-columns:1fr 1fr; }
-  }
-  @media (max-width: 900px){
-    .hero-grid{ grid-template-columns:1fr; }
-    .hero-visual{ display:none; }
-    .nav-links{ display:none; }
-    .jobs-grid{ grid-template-columns:1fr; }
-    .cat-grid{ grid-template-columns:1fr 1fr; }
-    .footer-grid{ grid-template-columns:1fr 1fr; }
-    .cta-banner{ flex-direction:column; align-items:flex-start; padding:40px 30px; }
-    .hero h1{ font-size:38px; }
-    .search-panel{ flex-direction:column; }
-    .search-field{ border-right:none; border-bottom:1px solid var(--border-soft); }
-  }
-  @media (max-width: 560px){
-    .cat-grid, .footer-grid, .profile-grid{ grid-template-columns:1fr; }
-    .wrap, .nav-inner{ padding-left:20px; padding-right:20px; }
-  }
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
+<div class="loader-screen">
+    <div class="loader-logo"><span>Career</span>Connect</div>
 
-<!-- ============ LOADING SCREEN ============ -->
-<div class="loader">
-  <div class="loader-mark"><span class="ring">स</span>Setu</div>
-  <div class="loader-tag">Connecting Bharat to the world</div>
-  <div class="loader-track"><div class="loader-fill"></div></div>
-</div>
-
-<!-- ============ SITE ============ -->
-<div class="site">
-
-<header class="nav">
-  <div class="flag-rule"><span class="f1"></span><span class="f2"></span><span class="f3"></span></div>
-  <div class="nav-inner">
-    <div class="logo"><span class="mark">स</span>Setu</div>
-    <nav class="nav-links">
-      <a href="#jobs">Explore Roles</a>
-      <a href="#talent">Global Talent</a>
-      <a href="#categories">Categories</a>
-      <a href="#employers">For Employers</a>
-    </nav>
-    <div class="nav-actions">
-      <a href="#" class="btn btn-ghost">Sign In</a>
-      <a href="#" class="btn btn-solid">Post a Role</a>
+    <div class="loader-bar">
+        <div class="loader-progress"></div>
     </div>
+
+    <p>Loading your next opportunity...</p>
+</div>
+<input type="checkbox" id="menu-toggle" class="menu-check" />
+<header class="navbar">
+  <a class="brand" href="index.html" aria-label="CareerConnect home">
+    <span class="brand-mark"><i class="fa-solid fa-briefcase"></i></span>
+    <span>Career<span>Connect</span></span>
+  </a>
+  <nav class="desktop-nav">
+    <a href="index.html" class="active">Home</a><a href="jobs.html">Jobs</a><a href="companies.html">Companies</a><a href="about.html">About</a><a href="contact.html">Contact</a>
+  </nav>
+  <div class="nav-actions">
+    <a class="btn btn-ghost nav-signin" href="login.html">Sign In</a>
+    <a class="btn btn-primary nav-register" href="register.html">Register</a>
+    <label for="menu-toggle" class="menu-toggle icon-btn" aria-label="Open menu"><i class="fa-solid fa-bars"></i></label>
   </div>
 </header>
-
-<section class="hero">
-  <div class="wrap hero-grid">
-    <div>
-      <span class="eyebrow">Headquartered in Bengaluru — hiring worldwide</span>
-      <h1>India's <em>setu</em> to the<br>world's best work.</h1>
-      <p class="lead">Setu connects Indian professionals with roles at global companies, and brings international talent into India's fastest-growing teams. One portal, every border.</p>
-
-      <div class="search-panel">
-        <div class="search-field">
-          <label>Role</label>
-          <input type="text" placeholder="Software engineer, analyst…">
-        </div>
-        <div class="search-field">
-          <label>Location</label>
-          <input type="text" placeholder="Bengaluru, Dubai, London…">
-        </div>
-        <button class="btn btn-solid">Search</button>
+<label for="menu-toggle" class="mobile-menu">
+  <a href="index.html">Home</a><a href="jobs.html">Jobs</a><a href="companies.html">Companies</a><a href="about.html">About</a><a href="contact.html">Contact</a>
+  <a href="login.html">Sign In</a><a href="register.html">Register</a>
+</label>
+<main id="top">
+  <section class="hero">
+    <div class="shape one"></div>
+    <div class="shape two"></div>
+    <div class="container">
+      <div class="hero-copy">
+        <span class="eyebrow"><i class="fa-solid fa-sparkles"></i> The smarter way to work</span>
+        <h1>Find Your <span>Dream Job</span> Today</h1>
+        <p>Connect with top companies and explore thousands of job opportunities across multiple industries.</p>
+        <form class="search-box" action="jobs.html">
+          <label class="search-field"><i class="fa-solid fa-magnifying-glass"></i><input name="query" placeholder="Job title, keyword..."></label>
+          <label class="search-field"><i class="fa-solid fa-location-dot"></i><input name="location" placeholder="Location"></label>
+          <label class="search-field"><i class="fa-solid fa-layer-group"></i>
+            <select name="category"><option value="">All categories</option><option>Technology</option><option>Design</option><option>Analytics</option><option>Cybersecurity</option></select>
+          </label>
+          <button class="btn btn-primary" type="submit">Search Jobs</button>
+        </form>
       </div>
-
-      <div class="hero-tags">
-        <span class="pill">Visa-sponsored roles</span>
-        <span class="pill">Remote &amp; onsite</span>
-        <span class="pill">Response in 48h</span>
-      </div>
-    </div>
-
-    <div class="hero-visual">
-      <div class="passport back">
-        <div class="p-top"><span class="p-code">JR–1182</span></div>
-        <div class="p-avatar"></div>
-        <h3>Staff Engineer</h3>
-        <div class="p-role">Northbridge Tech · Singapore</div>
-      </div>
-      <div class="passport front">
-        <div class="p-top">
-          <span class="p-code">JR–2049</span>
-          <span class="p-code" style="color:var(--green)">OPEN</span>
+      <div class="hero-art">
+        <div class="art-card">
+          <div class="floating-card fc-one"><strong><i class="fa-solid fa-circle-check"></i>Application sent</strong><small>Frontend Developer &middot; 2m ago</small></div>
+          <div class="person"><i class="fa-solid fa-user-tie"></i></div>
+          <div class="floating-card fc-two"><strong><i class="fa-solid fa-chart-line"></i>12 new matches</strong><small>Perfect roles for you</small></div>
         </div>
-        <div class="p-avatar" style="background:linear-gradient(150deg, var(--saffron-soft), #8a5f22)"></div>
-        <h3>Senior Product Manager</h3>
-        <div class="p-role">Meridian Retail · Dubai, UAE</div>
-        <div class="p-divider"></div>
-        <div class="p-foot">
-          <span>Level <span>L5</span></span>
-          <span>Comp <span>AED 33–40k/mo</span></span>
-        </div>
-        <div class="stamp"><span>VISA</span><span>UAE</span></div>
       </div>
     </div>
+  </section>
+
+  <section class="stats">
+    <div class="container stats-grid">
+      <div class="stat"><i class="fa-solid fa-briefcase"></i><div><strong>20,000+</strong><span>Active Jobs</span></div></div>
+      <div class="stat"><i class="fa-solid fa-building"></i><div><strong>5,000+</strong><span>Companies</span></div></div>
+      <div class="stat"><i class="fa-solid fa-users"></i><div><strong>100,000+</strong><span>Registered Users</span></div></div>
+      <div class="stat"><i class="fa-solid fa-circle-check"></i><div><strong>50,000+</strong><span>Successful Hires</span></div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div><span class="section-kicker">Curated for you</span><h2>Featured Jobs</h2><p>Opportunities from companies building the future.</p></div>
+        <a href="jobs.html" class="btn btn-outline">Browse all jobs <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+      <div class="jobs-grid">
+        <article class="job-card">
+  <div class="job-top">
+    <div class="logo-box">G</div>
+    <button class="icon-btn save-btn" title="Save job"><i class="fa-regular fa-bookmark"></i></button>
   </div>
-</section>
-
-<section class="stats">
-  <div class="wrap stats-row">
-    <div class="stat"><b>18,600+</b><span>Open roles across 46 countries</span></div>
-    <div class="stat"><b>2,900</b><span>Global companies hiring Indian talent</span></div>
-    <div class="stat"><b>91%</b><span>Applications answered within 48h</span></div>
-    <div class="stat"><b>36 days</b><span>Median time to offer</span></div>
+  <h3>Frontend Developer</h3>
+  <p>Google</p>
+  <div class="meta"><span><i class="fa-solid fa-location-dot"></i>Mountain View, CA</span><span><i class="fa-solid fa-clock"></i>Full-time</span></div>
+  <div class="salary">$135k – $175k <small>/ year</small></div>
+  <div class="card-footer"><span class="tag">2–4 yrs</span><a href="jobs/frontend-developer-google.html" class="btn btn-outline">View Job</a></div>
+</article>
+<article class="job-card">
+  <div class="job-top">
+    <div class="logo-box">M</div>
+    <button class="icon-btn save-btn" title="Save job"><i class="fa-regular fa-bookmark"></i></button>
   </div>
-</section>
-
-<section class="section" id="jobs">
-  <div class="wrap">
-    <div class="section-head">
-      <div>
-        <span class="eyebrow">Featured roles</span>
-        <h2>Open across the globe</h2>
-      </div>
-      <p>Verified openings from companies in India and abroad, screened for genuine intent to hire.</p>
-      <a href="#" class="view-all">View all 18,600 roles →</a>
-    </div>
-
-    <div class="jobs-grid">
-
-      <div class="job-card">
-        <div class="job-main">
-          <div class="job-top">
-            <div class="job-logo" style="background:linear-gradient(150deg,var(--saffron-soft),var(--saffron))">M</div>
-            <div><div style="color:var(--navy);font-weight:600;font-size:14px">Meridian Retail</div><div class="job-co">E-commerce</div></div>
-          </div>
-          <h3>Senior Product Manager</h3>
-          <div class="job-meta">
-            <span>Onsite · Dubai</span>
-            <span>Full-time</span>
-            <span>Posted 2d ago</span>
-          </div>
-          <div class="job-tags">
-            <span class="tag">Growth</span>
-            <span class="tag">Marketplace</span>
-            <span class="tag">B2C</span>
-          </div>
-        </div>
-        <div class="job-stub">
-          <span class="flagchip">AE</span>
-          <span class="code">JR–2049</span>
-          <span class="pay">AED 33–40k</span>
-        </div>
-      </div>
-
-      <div class="job-card">
-        <div class="job-main">
-          <div class="job-top">
-            <div class="job-logo" style="background:linear-gradient(150deg,var(--green),#1f5b41)">N</div>
-            <div><div style="color:var(--navy);font-weight:600;font-size:14px">Northbridge Tech</div><div class="job-co">Cloud Infrastructure</div></div>
-          </div>
-          <h3>Staff Backend Engineer</h3>
-          <div class="job-meta">
-            <span>Hybrid · Singapore</span>
-            <span>Full-time</span>
-            <span>Posted 1d ago</span>
-          </div>
-          <div class="job-tags">
-            <span class="tag">Go</span>
-            <span class="tag">Kubernetes</span>
-            <span class="tag">Fintech</span>
-          </div>
-        </div>
-        <div class="job-stub">
-          <span class="flagchip">SG</span>
-          <span class="code">JR–1182</span>
-          <span class="pay">S$11–13k/mo</span>
-        </div>
-      </div>
-
-      <div class="job-card">
-        <div class="job-main">
-          <div class="job-top">
-            <div class="job-logo" style="background:linear-gradient(150deg,#c9c9d6,#8a8fa3)">H</div>
-            <div><div style="color:var(--navy);font-weight:600;font-size:14px">Harrow &amp; Finch</div><div class="job-co">Financial Services</div></div>
-          </div>
-          <h3>Business Analyst</h3>
-          <div class="job-meta">
-            <span>Onsite · London</span>
-            <span>Full-time</span>
-            <span>Posted 4d ago</span>
-          </div>
-          <div class="job-tags">
-            <span class="tag">Excel</span>
-            <span class="tag">SQL</span>
-            <span class="tag">Banking</span>
-          </div>
-        </div>
-        <div class="job-stub">
-          <span class="flagchip">UK</span>
-          <span class="code">JR–2210</span>
-          <span class="pay">£58–68k</span>
-        </div>
-      </div>
-
-      <div class="job-card">
-        <div class="job-main">
-          <div class="job-top">
-            <div class="job-logo" style="background:linear-gradient(150deg,var(--saffron-soft),#8a5f22)">V</div>
-            <div><div style="color:var(--navy);font-weight:600;font-size:14px">Vantage Analytics</div><div class="job-co">Data &amp; AI</div></div>
-          </div>
-          <h3>Data Scientist, Growth</h3>
-          <div class="job-meta">
-            <span>Remote · Bengaluru</span>
-            <span>Full-time</span>
-            <span>Posted 6h ago</span>
-          </div>
-          <div class="job-tags">
-            <span class="tag">Python</span>
-            <span class="tag">A/B Testing</span>
-            <span class="tag">SQL</span>
-          </div>
-        </div>
-        <div class="job-stub">
-          <span class="flagchip">IN</span>
-          <span class="code">JR–2298</span>
-          <span class="pay">₹28–36L</span>
-        </div>
-      </div>
-
-    </div>
+  <h3>Backend Developer</h3>
+  <p>Microsoft</p>
+  <div class="meta"><span><i class="fa-solid fa-location-dot"></i>Redmond, WA</span><span><i class="fa-solid fa-clock"></i>Full-time</span></div>
+  <div class="salary">$125k – $165k <small>/ year</small></div>
+  <div class="card-footer"><span class="tag">3–5 yrs</span><a href="jobs/backend-developer-microsoft.html" class="btn btn-outline">View Job</a></div>
+</article>
+<article class="job-card">
+  <div class="job-top">
+    <div class="logo-box">A</div>
+    <button class="icon-btn save-btn" title="Save job"><i class="fa-regular fa-bookmark"></i></button>
   </div>
-</section>
-
-<section class="trusted">
-  <div class="wrap">
-    <p>Trusted by talent teams at</p>
-    <div class="logo-row">
-      <span>Northbridge Tech</span>
-      <span>Meridian Retail</span>
-      <span>Harrow &amp; Finch</span>
-      <span>Vantage</span>
-      <span>Kestrel Group</span>
-      <span>Oberon Labs</span>
-    </div>
+  <h3>UI/UX Designer</h3>
+  <p>Adobe</p>
+  <div class="meta"><span><i class="fa-solid fa-location-dot"></i>San Jose, CA</span><span><i class="fa-solid fa-clock"></i>Hybrid</span></div>
+  <div class="salary">$105k – $145k <small>/ year</small></div>
+  <div class="card-footer"><span class="tag">2–4 yrs</span><a href="jobs/ui-ux-designer-adobe.html" class="btn btn-outline">View Job</a></div>
+</article>
+<article class="job-card">
+  <div class="job-top">
+    <div class="logo-box">a</div>
+    <button class="icon-btn save-btn" title="Save job"><i class="fa-regular fa-bookmark"></i></button>
   </div>
-</section>
+  <h3>AI Engineer</h3>
+  <p>Amazon</p>
+  <div class="meta"><span><i class="fa-solid fa-location-dot"></i>Seattle, WA</span><span><i class="fa-solid fa-clock"></i>Full-time</span></div>
+  <div class="salary">$145k – $205k <small>/ year</small></div>
+  <div class="card-footer"><span class="tag">4–7 yrs</span><a href="jobs/ai-engineer-amazon.html" class="btn btn-outline">View Job</a></div>
+</article>
 
-<section class="section" id="talent">
-  <div class="wrap">
-    <div class="section-head">
-      <div>
-        <span class="eyebrow">Global talent on Setu</span>
-        <h2>Profiles from every timezone</h2>
-      </div>
-      <p>Candidates building careers across continents, all searchable from one portal.</p>
-    </div>
-
-    <div class="profile-grid">
-      <div class="profile-card">
-        <div class="avatar-ring" style="background:linear-gradient(150deg,var(--saffron-soft),var(--saffron))">AK</div>
-        <h3>Aarav Kapoor</h3>
-        <div class="p-title">Product Designer</div>
-        <div class="p-loc">Bengaluru, IN</div>
-      </div>
-      <div class="profile-card">
-        <div class="avatar-ring" style="background:linear-gradient(150deg,var(--green),#1f5b41)">SC</div>
-        <h3>Sofia Cardoso</h3>
-        <div class="p-title">Growth Marketer</div>
-        <div class="p-loc">São Paulo, BR</div>
-      </div>
-      <div class="profile-card">
-        <div class="avatar-ring" style="background:linear-gradient(150deg,#c9c9d6,#8a8fa3)">LW</div>
-        <h3>Liam Walsh</h3>
-        <div class="p-title">DevOps Engineer</div>
-        <div class="p-loc">Dublin, IE</div>
-      </div>
-      <div class="profile-card">
-        <div class="avatar-ring" style="background:linear-gradient(150deg,var(--saffron-soft),#8a5f22)">MY</div>
-        <h3>Mei Yamada</h3>
-        <div class="p-title">UX Researcher</div>
-        <div class="p-loc">Tokyo, JP</div>
       </div>
     </div>
+  </section>
+
+  <section class="section soft-section">
+    <div class="container">
+      <div class="section-head">
+        <div><span class="section-kicker">Meet your next team</span><h2>Top Companies</h2><p>Get noticed by the organizations shaping tomorrow.</p></div>
+        <a href="companies.html" class="btn btn-outline">Explore companies <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+      <div class="company-grid">
+        <article class="company-card">
+  <div class="logo-box">G</div>
+  <h3>Google</h3>
+  <p>Technology &middot; Mountain View, CA</p>
+  <a href="companies/google.html" class="btn btn-outline">2.4k jobs</a>
+</article>
+<article class="company-card">
+  <div class="logo-box">M</div>
+  <h3>Microsoft</h3>
+  <p>Technology &middot; Redmond, WA</p>
+  <a href="companies/microsoft.html" class="btn btn-outline">1.8k jobs</a>
+</article>
+<article class="company-card">
+  <div class="logo-box">a</div>
+  <h3>Amazon</h3>
+  <p>E-commerce &middot; Seattle, WA</p>
+  <a href="companies/amazon.html" class="btn btn-outline">3.1k jobs</a>
+</article>
+<article class="company-card">
+  <div class="logo-box">N</div>
+  <h3>Netflix</h3>
+  <p>Entertainment &middot; Los Gatos, CA</p>
+  <a href="companies/netflix.html" class="btn btn-outline">420 jobs</a>
+</article>
+<article class="company-card">
+  <div class="logo-box">A</div>
+  <h3>Adobe</h3>
+  <p>Creative Software &middot; San Jose, CA</p>
+  <a href="companies/adobe.html" class="btn btn-outline">380 jobs</a>
+</article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head"><div><span class="section-kicker">Simple by design</span><h2>How It Works</h2></div></div>
+      <div class="steps-grid">
+        <article class="step-card"><span class="step-num">01</span><div class="step-icon"><i class="fa-solid fa-user-plus"></i></div><h3>Create Account</h3><p>Set up your free profile in less than two minutes.</p></article>
+        <article class="step-card"><span class="step-num">02</span><div class="step-icon"><i class="fa-solid fa-id-card"></i></div><h3>Complete Profile</h3><p>Showcase your skills, experience, and ambitions.</p></article>
+        <article class="step-card"><span class="step-num">03</span><div class="step-icon"><i class="fa-solid fa-magnifying-glass"></i></div><h3>Search Jobs</h3><p>Discover roles matched to your unique goals.</p></article>
+        <article class="step-card"><span class="step-num">04</span><div class="step-icon"><i class="fa-solid fa-paper-plane"></i></div><h3>Apply Instantly</h3><p>Apply with confidence and track every application.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section soft-section">
+    <div class="container">
+      <div class="section-head"><div><span class="section-kicker">More than a job board</span><h2>Why Choose Us</h2></div></div>
+      <div class="feature-grid">
+        <article class="feature-card"><i class="fa-solid fa-shield-check"></i><div><h3>Verified Companies</h3><p>Every employer is reviewed so you can apply with confidence.</p></div></article>
+        <article class="feature-card"><i class="fa-solid fa-bolt"></i><div><h3>Instant Applications</h3><p>One profile, faster applications, more momentum.</p></div></article>
+        <article class="feature-card"><i class="fa-solid fa-file-lines"></i><div><h3>Resume Builder</h3><p>Create a polished resume that gets noticed.</p></div></article>
+        <article class="feature-card"><i class="fa-solid fa-wand-magic-sparkles"></i><div><h3>Smart Job Search</h3><p>Personalized matches based on what matters to you.</p></div></article>
+        <article class="feature-card"><i class="fa-solid fa-headset"></i><div><h3>24/7 Support</h3><p>Real people and useful resources whenever you need them.</p></div></article>
+        <article class="feature-card"><i class="fa-solid fa-compass"></i><div><h3>Career Guidance</h3><p>Practical insights for every stage of your career.</p></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head"><div><span class="section-kicker">Real people, real progress</span><h2>Success Stories</h2></div></div>
+      <div class="testimonials">
+        <article class="testimonial"><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p>&ldquo;CareerConnect helped me find a role where my work actually makes an impact. The entire process felt effortless.&rdquo;</p><div class="person-row"><div class="avatar">JD</div><div><strong>Jordan Davis</strong><small>Product Designer</small></div></div></article>
+        <article class="testimonial"><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p>&ldquo;I went from browsing to signing an offer in three weeks. The match quality is incredible.&rdquo;</p><div class="person-row"><div class="avatar">AM</div><div><strong>Ava Martinez</strong><small>Software Engineer</small></div></div></article>
+        <article class="testimonial"><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p>&ldquo;The profile tools helped me tell my story better and connect with a team I admire.&rdquo;</p><div class="person-row"><div class="avatar">RK</div><div><strong>Ryan Kim</strong><small>Marketing Lead</small></div></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container newsletter">
+      <div><span class="section-kicker news-kicker">Stay in the loop</span><h2>Get career inspiration in your inbox.</h2><p>Weekly opportunities, practical advice, and stories to help you move forward.</p></div>
+      <form class="newsletter-form"><input type="email" placeholder="Your email address" required><button class="btn btn-orange" type="submit">Subscribe</button></form>
+    </div>
+  </section>
+</main>
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a class="brand" href="index.html"><span class="brand-mark"><i class="fa-solid fa-briefcase"></i></span><span>Career<span>Connect</span></span></a>
+      <p>Build a career you love. Find opportunities that move you forward.</p>
+      <div class="socials"><a href="#"><i class="fa-brands fa-linkedin-in"></i></a><a href="#"><i class="fa-brands fa-x-twitter"></i></a><a href="#"><i class="fa-brands fa-instagram"></i></a><a href="#"><i class="fa-brands fa-facebook-f"></i></a></div>
+    </div>
+    <div><h4>For Candidates</h4><a href="jobs.html">Browse Jobs</a><a href="companies.html">Explore Companies</a><a href="register.html">Create Profile</a><a href="about.html">Career Resources</a></div>
+    <div><h4>For Employers</h4><a href="employer.html">Post a Job</a><a href="employer.html">Employer Dashboard</a><a href="contact.html">Talent Solutions</a><a href="about.html">Success Stories</a></div>
+    <div><h4>Company</h4><a href="about.html">About CareerConnect</a><a href="contact.html">Contact Us</a><a href="about.html">Privacy Policy</a><a href="about.html">Terms of Service</a></div>
   </div>
-</section>
-
-<section class="section" id="categories">
-  <div class="wrap">
-    <div class="section-head">
-      <div>
-        <span class="eyebrow">Browse by field</span>
-        <h2>Find your lane</h2>
-      </div>
-      <p>Every category is hiring across India and abroad — filtered for seniority, not just keywords.</p>
-    </div>
-
-    <div class="cat-grid">
-      <div class="cat-card">
-        <div class="cat-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c9812f" stroke-width="1.6"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-        </div>
-        <h3>Engineering</h3>
-        <p>4,210 open roles</p>
-      </div>
-      <div class="cat-card">
-        <div class="cat-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c9812f" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>
-        </div>
-        <h3>Product</h3>
-        <p>968 open roles</p>
-      </div>
-      <div class="cat-card">
-        <div class="cat-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c9812f" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-        </div>
-        <h3>Design</h3>
-        <p>702 open roles</p>
-      </div>
-      <div class="cat-card">
-        <div class="cat-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c9812f" stroke-width="1.6"><path d="M4 19h16M4 15l4-5 4 3 4-7 4 4"/></svg>
-        </div>
-        <h3>Data &amp; Analytics</h3>
-        <p>1,540 open roles</p>
-      </div>
-      <div class="cat-card">
-        <div class="cat-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c9812f" stroke-width="1.6"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
-        </div>
-        <h3>Marketing</h3>
-        <p>861 open roles</p>
-      </div>
-      <div class="cat-card">
-        <div class="cat-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c9812f" stroke-width="1.6"><path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="4"/></svg>
-        </div>
-        <h3>Operations</h3>
-        <p>573 open roles</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="employers" style="padding-top:0;">
-  <div class="wrap">
-    <div class="cta-banner">
-      <div>
-        <span class="eyebrow" style="color:var(--saffron-soft)">For employers</span>
-        <h2>Hire Indian talent, or bring<br>the world to your team.</h2>
-        <p>Post a role and get matched with candidates already screened for seniority, intent, and visa readiness.</p>
-      </div>
-      <div class="cta-side">
-        <a href="#" class="btn btn-gold">Post a Role →</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="wrap">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <div class="logo"><span class="mark">स</span>Setu</div>
-        <p>Headquartered in Bengaluru, India. Building the bridge between Indian talent and the world's best teams — and back again.</p>
-      </div>
-      <div class="footer-col">
-        <h4>Candidates</h4>
-        <a href="#">Browse roles</a>
-        <a href="#">Create profile</a>
-        <a href="#">Salary guide</a>
-        <a href="#">Visa resources</a>
-      </div>
-      <div class="footer-col">
-        <h4>Employers</h4>
-        <a href="#">Post a role</a>
-        <a href="#">Pricing</a>
-        <a href="#">Talent search</a>
-        <a href="#">Employer brand</a>
-      </div>
-      <div class="footer-col">
-        <h4>Company</h4>
-        <a href="#">About</a>
-        <a href="#">Journal</a>
-        <a href="#">Careers</a>
-        <a href="#">Contact</a>
-      </div>
-      <div class="footer-col">
-        <h4>Legal</h4>
-        <a href="#">Privacy</a>
-        <a href="#">Terms</a>
-        <a href="#">Cookies</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>© 2026 Setu Careers Pvt. Ltd. · Bengaluru, India</span>
-      <span>Every border, one portal.</span>
-    </div>
-  </div>
+  <div class="container footer-bottom"><span>&copy; 2026 CareerConnect. All rights reserved.</span><span><i class="fa-solid fa-shield-heart"></i> Your next chapter starts here.</span></div>
 </footer>
-
-</div>
+<a href="#top" class="back-top" aria-label="Back to top"><i class="fa-solid fa-arrow-up"></i></a>
 </body>
 </html>
