@@ -53,6 +53,7 @@
         const matchesIndustry=!selectedIndustry||d.categories.some(c=>c===selectedIndustry)||d.categoryText.includes(selectedIndustry);
         const show=matchesSearch&&matchesLocation&&matchesType&&matchesIndustry;
         card.hidden=!show;
+        card.style.display=show?"":"none";
         if(show)visible++;
       });
       if(count)count.textContent="Showing "+visible+" job"+(visible===1?"":"s");
