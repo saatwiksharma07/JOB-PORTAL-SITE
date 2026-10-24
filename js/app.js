@@ -180,6 +180,9 @@
     initAuth();
     initApply();
     initContact();
+    initHeader();
+    renderProfile();
+    initEmployer();
     initOther();
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
