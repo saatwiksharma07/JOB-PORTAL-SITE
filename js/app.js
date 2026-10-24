@@ -19,7 +19,25 @@
   function validate(f){for(const x of $$("input,select,textarea",f)){if(["file","submit","button"].includes(x.type)||x.disabled)continue;if(x.type==="checkbox"){if(/terms|accept/i.test(x.closest("label")?.textContent||"")&&!x.checked)throw Error("Please accept the Terms and Privacy Policy.");continue}const v=x.value.trim(),label=x.closest("div")?.querySelector("label")?.textContent.trim()||x.placeholder||"field";if(!v)throw Error("Please complete the "+label+" field.");if(x.type==="email"&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))throw Error("Please enter a valid email address.")}}
   const fields=f=>$$("input,select,textarea",f).filter(x=>!["checkbox","file","submit","button"].includes(x.type));
   function hash(p){if(!window.crypto?.subtle)return Promise.resolve("demo:"+p);return crypto.subtle.digest("SHA-256",new TextEncoder().encode(p)).then(b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join(""))}
-  function initAuth(){const f=$(".auth-card form"),path=location.pathname.toLowerCase();if(!f||(!path.endsWith("login.html")&&!path.endsWith("register.html")))return;const reg=path.endsWith("register.html");f.addEventListener("submit",e=>{e.preventDefault();Promise.resolve().then(()=>{validate(f);const a=fields(f),email=norm(a.find(x=>x.type==="email")?.value),passwords=a.filter(x=>x.type==="password");if(reg){const name=a[0].value.trim(),pw=passwords[0]?.value||"",role=$$("select",f)[0]?.value;if(pw.length<8)throw Error("Use a password with at least 8 characters.");if(pw!==passwords[1]?.value)throw Error("Passwords do not match.");if(!role)throw Error("Please select Job Seeker or Employer.");return Promise.all([read(K.users,[]),hash(pw)]).then(([users,h])=>{if(users.some(x=>x.email===email))throw Error("This email already has an account. Please sign in.");const u={id:"u"+Date.now(),name,email,role,hash:h};return write(K.users,[...users,u]).then(()=>write(K.session,{id:u.id,name,email,role})).then(()=>role)}).then(role=>{toast("Account created!");return wait().then(()=>location.href=role==="Employer"?"employer.html":"profile.html")})}return Promise.all([read(K.users,[]),hash(passwords[0]?.value||"")]).then(([users,h])=>{const u=users.find(x=>x.email===email);if(!u||u.hash!==h)throw Error("Email or password is incorrect. Create an account first if you are new.");return write(K.session,{id:u.id,name:u.name,email:u.email,role:u.role}).then(()=>wait().then(()=>location.href=u.role==="Employer"?"employer.html":"profile.html"))})}).catch(e=>toast(e.message||"Something went wrong.",true))})}
+  function initAuth(){
+    const f=$(".auth-card form"),path=location.pathname.toLowerCase();
+    if(!f||(!path.endsWith("login.html")&&!path.endsWith("register.html")))return;
+    const reg=path.endsWith("register.html");
+    f.addEventListener("submit",e=>{
+      e.preventDefault();
+      Promise.resolve().then(()=>{
+        validate(f);
+        const a=fields(f),passwords=a.filter(x=>x.type==="password");
+        if(reg){
+          if((passwords[0]?.value||"").length<8)throw Error("Use a password with at least 8 characters.");
+          if(passwords[0]?.value!==passwords[1]?.value)throw Error("Passwords do not match.");
+          if(!$("select",f)?.value)throw Error("Please select a role.");
+          return "Registration form validated. Account creation will be added in Section 3.";
+        }
+        return "Login form validated. Real sign-in will be added in Section 3.";
+      }).then(message=>toast(message)).catch(e=>toast(e.message||"Please check your details.",true));
+    });
+  }
   function initApply(){const f=$("main form.form-grid");if(!f||!/\/apply\/[^/]+\.html$/i.test(location.pathname))return;f.addEventListener("submit",e=>{e.preventDefault();Promise.resolve().then(()=>{validate(f);const values=fields(f).map(x=>({label:x.closest("div")?.querySelector("label")?.textContent||x.placeholder||"Field",value:x.value.trim()})),title=$("h1")?.textContent.trim()||document.title;return read(K.apps,[]).then(a=>write(K.apps,[...a,{id:"a"+Date.now(),title,values,submittedAt:new Date().toISOString(),status:"Submitted"}]))}).then(()=>{toast("Application saved in this browser only; it was not sent to the employer.");f.reset()}).catch(e=>toast(e.message||"Could not save application.",true))})}
   function initContact(){const f=$("main form.form-grid");if(!f||!/contact\.html$/i.test(location.pathname))return;f.addEventListener("submit",e=>{e.preventDefault();Promise.resolve().then(()=>{validate(f);const values=fields(f).map(x=>({label:x.closest("div")?.querySelector("label")?.textContent||x.placeholder||"Field",value:x.value.trim()}));return read(K.messages,[]).then(a=>write(K.messages,[...a,{id:"m"+Date.now(),values,createdAt:new Date().toISOString()}]))}).then(()=>{toast("Message saved locally. Email delivery is not configured.");f.reset()}).catch(e=>toast(e.message||"Could not save message.",true))})}
   function initHeader(){read(K.session,null).then(s=>{if(!s)return;const login=$(".nav-signin"),reg=$(".nav-register");if(login){login.textContent="My Profile";login.href=s.role==="Employer"?"employer.html":"profile.html"}if(reg){reg.textContent="Sign Out";reg.href="#";reg.addEventListener("click",e=>{e.preventDefault();write(K.session,null).then(()=>location.href="index.html")})}})}
