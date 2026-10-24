@@ -29,7 +29,7 @@
     const panel=$(".filter-panel"),list=$(".jobs-list");
     if(!panel||!list)return;
     addExtraJobs(list);
-    const cards=$(".wide-job",list);
+    const cards=$$(".wide-job",list);
     if(!cards.length)return;
     const fields=$$("input,select",panel),[search,loc,type,industry]=fields;
     const button=$("button",panel),sort=$(".toolbar select"),count=$(".toolbar span");
