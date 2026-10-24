@@ -13,9 +13,73 @@
   function setSave(b,saved){const i=$("i",b);b.setAttribute("aria-pressed",String(saved));b.title=saved?"Remove saved job":"Save job";b.setAttribute("aria-label",b.title);if(i){i.classList.toggle("fa-solid",saved);i.classList.toggle("fa-regular",!saved)}}
   function initSaves(){const buttons=$$(".save-btn");read(K.saved,[]).then(saved=>buttons.forEach(b=>{const card=b.closest(".job-card,.wide-job");if(!card)return;const item=info(card);setSave(b,saved.some(x=>x.key===item.key));b.addEventListener("click",()=>read(K.saved,[]).then(list=>{const exists=list.some(x=>x.key===item.key);return write(K.saved,exists?list.filter(x=>x.key!==item.key):[...list,item]).then(()=>{setSave(b,!exists);toast(exists?"Removed saved job.":"Job saved.");renderProfile()})}).catch(()=>toast("Could not update saved jobs.",true)))}))}
   function initHome(){const f=$(".search-box");if(!f)return;f.addEventListener("submit",e=>{e.preventDefault();const d=new FormData(f),p=new URLSearchParams();["query","location","category"].forEach(k=>{const v=String(d.get(k)||"").trim();if(v)p.set(k,v)});location.href="jobs.html"+(p.toString()?"?"+p:"")})}
-  function initFilters(){const panel=$(".filter-panel"),cards=$$(".wide-job");if(!panel||!cards.length)return;const fields=$$("input,select",panel),[search,loc,type,industry]=fields,button=$("button",panel),sort=$(".toolbar select"),count=$(".toolbar span"),p=new URLSearchParams(location.search);if(search&&p.has("query"))search.value=p.get("query");if(loc&&p.has("location"))loc.value=p.get("location");if(industry&&p.has("category")){const o=$$("option",industry).find(x=>norm(x.value||x.textContent)===norm(p.get("category")));if(o)industry.value=o.value||o.textContent}
-    function filter(){let n=0;cards.forEach(c=>{const t=norm(c.textContent),ok=(!norm(search?.value)||t.includes(norm(search.value)))&&(!norm(loc?.value)||t.includes(norm(loc.value)))&&(!norm(type?.value)||t.includes(norm(type.value)))&&(!norm(industry?.value)||t.includes(norm(industry.value)));c.hidden=!ok;if(ok)n++});if(count)count.textContent="Showing "+n+" jobs";let empty=$("#cc-empty-jobs");if(!n&&!empty){empty=document.createElement("p");empty.id="cc-empty-jobs";empty.className="description";empty.textContent="No jobs match those filters. Try changing your search."; $(".jobs-list").appendChild(empty)}if(empty)empty.hidden=n>0}
-    button?.addEventListener("click",e=>{e.preventDefault();filter()});fields.forEach(f=>f.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();filter()}}));sort?.addEventListener("change",()=>{const list=$(".jobs-list"),a=[...cards],v=norm(sort.value);if(v.includes("title"))a.sort((x,y)=>info(x).title.localeCompare(info(y).title));if(v.includes("company"))a.sort((x,y)=>info(x).company.localeCompare(info(y).company));a.forEach(c=>list.appendChild(c))});filter()}
+  function initFilters(){
+    const panel=$(".filter-panel"),cards=$$(".wide-job");
+    if(!panel||!cards.length)return;
+    const fields=$$("input,select",panel),[search,loc,type,industry]=fields;
+    const button=$("button",panel),sort=$(".toolbar select"),count=$(".toolbar span"),list=$(".jobs-list");
+    const params=new URLSearchParams(location.search);
+    if(search&&params.has("query"))search.value=params.get("query");
+    if(loc&&params.has("location"))loc.value=params.get("location");
+    if(industry&&params.has("category")){
+      const option=$$("option",industry).find(o=>norm(o.value||o.textContent)===norm(params.get("category")));
+      if(option)industry.value=option.value||option.textContent;
+    }
+    function cardData(card){
+      const title=$("h3",card)?.textContent.trim()||"";
+      const company=card.querySelector("p strong")?.textContent.trim()||"";
+      const paragraphs=$$("p",card).map(p=>p.textContent.trim()).join(" ");
+      const meta=$$(".meta span",card).map(x=>x.textContent.trim());
+      const tags=$$(".tags .tag",card).map(x=>x.textContent.trim());
+      const jobType=meta.length?meta[meta.length-1]:"";
+      const text=norm([title,company,paragraphs,...meta,...tags].join(" "));
+      const categoryText=norm([title,paragraphs,...tags].join(" "));
+      const categories=[];
+      if(/analyst|analytics|sql|tableau|data/.test(categoryText))categories.push("analytics");
+      if(/ai engineer|artificial intelligence|machine learning|\bml\b|python/.test(categoryText))categories.push("artificial intelligence");
+      if(/cloud|aws|azure|kubernetes|terraform/.test(categoryText))categories.push("cloud computing");
+      if(/cyber|security|siem|risk/.test(categoryText))categories.push("cybersecurity");
+      if(/designer|design|figma|ux|ui\//.test(categoryText))categories.push("design");
+      if(/developer|engineer|software|react|node\.js|typescript|api/.test(categoryText))categories.push("technology");
+      return {title,company,text,categoryText,jobType:norm(jobType),categories};
+    }
+    function filter(){
+      let visible=0;
+      cards.forEach(card=>{
+        const d=cardData(card),q=norm(search?.value),where=norm(loc?.value),selectedType=norm(type?.value),selectedIndustry=norm(industry?.value);
+        const matchesSearch=!q||d.categoryText.includes(q)||norm(d.company).includes(q);
+        const matchesLocation=!where||d.text.includes(where);
+        const matchesType=!selectedType||d.jobType.includes(selectedType);
+        const matchesIndustry=!selectedIndustry||d.categories.some(c=>c===selectedIndustry)||d.categoryText.includes(selectedIndustry);
+        const show=matchesSearch&&matchesLocation&&matchesType&&matchesIndustry;
+        card.hidden=!show;
+        if(show)visible++;
+      });
+      if(count)count.textContent="Showing "+visible+" job"+(visible===1?"":"s");
+      let empty=$("#cc-empty-jobs");
+      if(!visible&&!empty&&list){
+        empty=document.createElement("p");empty.id="cc-empty-jobs";empty.className="description";
+        empty.textContent="No jobs match those filters. Try changing your search.";
+        list.appendChild(empty);
+      }
+      if(empty)empty.hidden=visible>0;
+    }
+    button?.addEventListener("click",e=>{e.preventDefault();filter()});
+    fields.forEach(field=>{
+      field.addEventListener("input",filter);
+      field.addEventListener("change",filter);
+      field.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();filter()}});
+    });
+    sort?.addEventListener("change",()=>{
+      if(!list)return;
+      const mode=norm(sort.value),ordered=[...cards];
+      if(mode.includes("title"))ordered.sort((a,b)=>info(a).title.localeCompare(info(b).title));
+      else if(mode.includes("company"))ordered.sort((a,b)=>info(a).company.localeCompare(info(b).company));
+      ordered.forEach(card=>list.appendChild(card));
+      filter();
+    });
+    filter();
+  }
   function validate(f){for(const x of $$("input,select,textarea",f)){if(["file","submit","button"].includes(x.type)||x.disabled)continue;if(x.type==="checkbox"){if(/terms|accept/i.test(x.closest("label")?.textContent||"")&&!x.checked)throw Error("Please accept the Terms and Privacy Policy.");continue}const v=x.value.trim(),label=x.closest("div")?.querySelector("label")?.textContent.trim()||x.placeholder||"field";if(!v)throw Error("Please complete the "+label+" field.");if(x.type==="email"&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))throw Error("Please enter a valid email address.")}}
   const fields=f=>$$("input,select,textarea",f).filter(x=>!["checkbox","file","submit","button"].includes(x.type));
   function hash(p){if(!window.crypto?.subtle)return Promise.resolve("demo:"+p);return crypto.subtle.digest("SHA-256",new TextEncoder().encode(p)).then(b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join(""))}
