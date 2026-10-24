@@ -38,12 +38,42 @@
       }).then(message=>toast(message)).catch(e=>toast(e.message||"Please check your details.",true));
     });
   }
-  function initApply(){const f=$("main form.form-grid");if(!f||!/\/apply\/[^/]+\.html$/i.test(location.pathname))return;f.addEventListener("submit",e=>{e.preventDefault();Promise.resolve().then(()=>{validate(f);const values=fields(f).map(x=>({label:x.closest("div")?.querySelector("label")?.textContent||x.placeholder||"Field",value:x.value.trim()})),title=$("h1")?.textContent.trim()||document.title;return read(K.apps,[]).then(a=>write(K.apps,[...a,{id:"a"+Date.now(),title,values,submittedAt:new Date().toISOString(),status:"Submitted"}]))}).then(()=>{toast("Application saved in this browser only; it was not sent to the employer.");f.reset()}).catch(e=>toast(e.message||"Could not save application.",true))})}
-  function initContact(){const f=$("main form.form-grid");if(!f||!/contact\.html$/i.test(location.pathname))return;f.addEventListener("submit",e=>{e.preventDefault();Promise.resolve().then(()=>{validate(f);const values=fields(f).map(x=>({label:x.closest("div")?.querySelector("label")?.textContent||x.placeholder||"Field",value:x.value.trim()}));return read(K.messages,[]).then(a=>write(K.messages,[...a,{id:"m"+Date.now(),values,createdAt:new Date().toISOString()}]))}).then(()=>{toast("Message saved locally. Email delivery is not configured.");f.reset()}).catch(e=>toast(e.message||"Could not save message.",true))})}
+  function initApply(){
+    if(!/\/apply\/[^/]+\.html$/i.test(location.pathname))return;
+    const f=$("main form.form-grid");
+    if(!f)return;
+    f.addEventListener("submit",e=>{
+      e.preventDefault();
+      Promise.resolve().then(()=>{
+        validate(f);
+        return "Application form validated. Sending applications is part of Section 3.";
+      }).then(message=>toast(message)).catch(e=>toast(e.message||"Please check your details.",true));
+    });
+  }
+  function initContact(){
+    if(!/contact\.html$/i.test(location.pathname))return;
+    const f=$("main form.form-grid");
+    if(!f)return;
+    f.addEventListener("submit",e=>{
+      e.preventDefault();
+      Promise.resolve().then(()=>{
+        validate(f);
+        return "Contact form validated. Message delivery is part of Section 3.";
+      }).then(message=>toast(message)).catch(e=>toast(e.message||"Please check your details.",true));
+    });
+  }
   function initHeader(){read(K.session,null).then(s=>{if(!s)return;const login=$(".nav-signin"),reg=$(".nav-register");if(login){login.textContent="My Profile";login.href=s.role==="Employer"?"employer.html":"profile.html"}if(reg){reg.textContent="Sign Out";reg.href="#";reg.addEventListener("click",e=>{e.preventDefault();write(K.session,null).then(()=>location.href="index.html")})}})}
   function renderProfile(){if(!/profile\.html$/i.test(location.pathname))return;Promise.all([read(K.session,null),read(K.saved,[]),read(K.apps,[])]).then(([s,saved,apps])=>{const name=s?.name||"Guest",h=$(".profile-content .section-head h2"),n=$(".profile-nav h3"),em=$(".profile-nav small");if(h)h.textContent="Welcome, "+name.split(/\s+/)[0];if(n)n.textContent=name;if(em&&s)em.textContent=s.email;const stats=$$(".mini-stat strong");if(stats[0])stats[0].textContent=saved.length;if(stats[1])stats[1].textContent=apps.length;const detail=$(".detail-section");if(detail)detail.innerHTML="<h3>Your applications</h3>"+(apps.length?apps.slice().reverse().slice(0,8).map(a=>'<div class="wide-job" style="margin:10px 0"><div><h3>'+esc(a.title)+'</h3><p>'+esc(new Date(a.submittedAt).toLocaleDateString())+'</p></div><span class="tag">'+esc(a.status)+'</span></div>').join(""):'<p class="description">No applications saved in this browser yet. Browse jobs to get started.</p>');$$(".profile-nav a").forEach(a=>{const t=norm(a.textContent);if(t.includes("saved jobs")||t.includes("applications")||t.includes("profile settings"))a.addEventListener("click",e=>{e.preventDefault();toast(t.includes("saved jobs")?"Saved jobs: "+saved.length:t.includes("applications")?"Applications: "+apps.length:"Profile editing requires a backend.")});if(t.includes("sign out"))a.addEventListener("click",e=>{e.preventDefault();write(K.session,null).then(()=>location.href="index.html")})})}).catch(console.error)}
   function initEmployer(){if(!/employer\.html$/i.test(location.pathname)||!$("main")||$("#cc-employer-panel"))return;const sec=document.createElement("section");sec.id="cc-employer-panel";sec.className="section";sec.innerHTML='<div class="container"><h2>Post a job</h2><p>Create a listing stored only in this browser.</p><form class="form-grid" id="cc-job-form"><div><label>Job title</label><input id="cc-title" required></div><div><label>Company</label><input id="cc-company" required></div><div><label>Location</label><input id="cc-location" required></div><div><label>Job type</label><select id="cc-type" required><option value="">Choose type</option><option>Full-time</option><option>Part-time</option><option>Contract</option><option>Internship</option><option>Remote</option></select></div><div><label>Description</label><textarea id="cc-description" required></textarea></div><button class="btn btn-primary">Save job listing</button></form><div id="cc-employer-list"></div></div>'; $("main").appendChild(sec);const f=$("#cc-job-form"),list=$("#cc-employer-list");function render(){read(K.employerJobs,[]).then(a=>list.innerHTML=a.map(j=>'<article class="wide-job"><div><h3>'+esc(j.title)+'</h3><p>'+esc(j.company)+' · '+esc(j.location)+' · '+esc(j.type)+'</p><p>'+esc(j.description)+'</p></div><button data-del="'+j.id+'" class="btn btn-outline">Delete</button></article>').join("")||"<p>No listings created yet.</p>")}f.addEventListener("submit",e=>{e.preventDefault();Promise.resolve().then(()=>{validate(f);const j={id:"j"+Date.now(),title:$("#cc-title").value,company:$("#cc-company").value,location:$("#cc-location").value,type:$("#cc-type").value,description:$("#cc-description").value};return read(K.employerJobs,[]).then(a=>write(K.employerJobs,[...a,j]))}).then(()=>{f.reset();toast("Job listing saved locally.");render()}).catch(e=>toast(e.message,true))});list.addEventListener("click",e=>{const b=e.target.closest("[data-del]");if(b)read(K.employerJobs,[]).then(a=>write(K.employerJobs,a.filter(j=>j.id!==b.dataset.del))).then(render) });render()}
   function initOther(){ $$(".social-login button").forEach(b=>b.addEventListener("click",e=>{e.preventDefault();toast("Social sign-in is not connected. Use email and password.",true)}));$$('a[href="#"]').forEach(a=>{if(a.closest(".socials")||a.closest(".profile-nav"))return;a.addEventListener("click",e=>{if(norm(a.textContent).includes("forgot password")){e.preventDefault();toast("Password reset requires a backend and email service.")}else if(a.closest("footer")){e.preventDefault();toast("This link is not connected yet.")}})});const loader=$(".loader-screen");if(loader)wait(300).then(()=>{loader.style.transition="opacity .3s";loader.style.opacity="0";setTimeout(()=>loader.remove(),320)})}
-  function init(){initHome();initFilters();initSaves();initAuth();initApply();initContact();initHeader();renderProfile();initEmployer();initOther()}
+  function init(){
+    initHome();
+    initFilters();
+    initSaves();
+    initAuth();
+    initApply();
+    initContact();
+    initOther();
+  }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
 })();
