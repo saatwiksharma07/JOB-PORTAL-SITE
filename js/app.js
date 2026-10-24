@@ -66,11 +66,9 @@
       if(empty)empty.hidden=visible>0;
     }
     button?.addEventListener("click",e=>{e.preventDefault();filter()});
-    fields.forEach(field=>{
-      field.addEventListener("input",filter);
-      field.addEventListener("change",filter);
-      field.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();filter()}});
-    });
+    fields.forEach(field=>field.addEventListener("keydown",e=>{
+      if(e.key==="Enter"){e.preventDefault();filter()}
+    }));
     sort?.addEventListener("change",()=>{
       if(!list)return;
       const mode=norm(sort.value),ordered=[...cards];
